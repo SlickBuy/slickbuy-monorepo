@@ -6,11 +6,12 @@ import { useRouter } from "next/navigation";
 import { bidsAPI } from "@/lib/api";
 import { Button, Card } from "@auction-platform/ui";
 import { useAuth } from "@/contexts/AuthContext";
+import type { Bid } from "@auction-platform/types";
 
 export default function MyBidsPage() {
   const { isAuthenticated } = useAuth();
   const router = useRouter();
-  const [bids, setBids] = useState<any[]>([]);
+  const [bids, setBids] = useState<Bid[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -40,7 +41,7 @@ export default function MyBidsPage() {
         </div>
       ) : bids.length === 0 ? (
         <Card>
-          <p className="text-gray-500">You haven't placed any bids yet.</p>
+          <p className="text-gray-500">You haven&apos;t placed any bids yet.</p>
           <div className="mt-4">
             <Link href="/auctions">
               <Button>Browse Auctions</Button>

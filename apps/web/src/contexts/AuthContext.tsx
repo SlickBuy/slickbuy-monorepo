@@ -84,7 +84,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         const user = JSON.parse(userData);
         dispatch({ type: "SET_USER", payload: user });
-      } catch (error) {
+      } catch {
         localStorage.removeItem("auction_token");
         localStorage.removeItem("auction_user");
         dispatch({ type: "SET_LOADING", payload: false });
@@ -114,11 +114,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           message: response.data.message || "Login failed",
         };
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       dispatch({ type: "SET_LOADING", payload: false });
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Login failed";
       return {
         success: false,
-        message: error.response?.data?.message || "Login failed",
+        message,
       };
     }
   };
@@ -143,11 +146,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           message: response.data.message || "Registration failed",
         };
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       dispatch({ type: "SET_LOADING", payload: false });
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Registration failed";
       return {
         success: false,
-        message: error.response?.data?.message || "Registration failed",
+        message,
       };
     }
   };

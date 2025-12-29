@@ -66,7 +66,7 @@ export default function CheckoutPage() {
       try {
         const resp = await api.post(`/payments/checkout/${paymentId}`);
         if (resp.data?.success) setClientSecret(resp.data.data.clientSecret);
-      } catch (e) {
+      } catch {
         // noop; surface via UI if needed
       }
     };

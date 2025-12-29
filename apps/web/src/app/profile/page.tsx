@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { bidsAPI, api } from "@/lib/api";
 import { useToast } from "@auction-platform/ui";
 
-export default function ProfilePage() {
+function ProfileContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, isAuthenticated, isLoading, logout } = useAuth();
@@ -688,5 +688,31 @@ export default function ProfilePage() {
         </section>
       )}
     </div>
+  );
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="h-40 rounded-2xl bg-gradient-to-r from-teal-600 to-teal-800 animate-pulse" />
+          <div className="grid md:grid-cols-3 gap-6 mt-6">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="h-28 rounded-xl bg-gray-200 animate-pulse"
+              />
+            ))}
+          </div>
+          <div className="mt-8 grid md:grid-cols-2 gap-6">
+            <div className="h-72 rounded-xl bg-gray-200 animate-pulse" />
+            <div className="h-72 rounded-xl bg-gray-200 animate-pulse" />
+          </div>
+        </div>
+      }
+    >
+      <ProfileContent />
+    </Suspense>
   );
 }

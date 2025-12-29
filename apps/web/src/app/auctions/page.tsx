@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Auction } from "@auction-platform/types";
 import { auctionsAPI } from "@/lib/api";
@@ -11,7 +11,7 @@ import { Card } from "@/components/ui/card";
 
 type StatusFilter = "all" | "active" | "scheduled" | "ended";
 
-export default function AuctionsListPage() {
+function AuctionsContent() {
   const router = useRouter();
   const sp = useSearchParams();
   const [auctions, setAuctions] = useState<Auction[]>([]);
@@ -288,5 +288,38 @@ export default function AuctionsListPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function AuctionsListPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-foreground">All Auctions</h1>
+            <p className="text-[color:var(--muted-foreground)] mt-1">
+              Explore live and upcoming auctions. Use filters to find what you
+              want.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(9)].map((_, i) => (
+              <div
+                key={i}
+                className="bg-white rounded-lg shadow-sm p-6 animate-pulse"
+              >
+                <div className="h-48 bg-gray-200 rounded mb-4" />
+                <div className="h-4 bg-gray-200 rounded mb-2" />
+                <div className="h-4 bg-gray-200 rounded mb-4 w-3/4" />
+                <div className="h-6 bg-gray-200 rounded" />
+              </div>
+            ))}
+          </div>
+        </div>
+      }
+    >
+      <AuctionsContent />
+    </Suspense>
   );
 }
