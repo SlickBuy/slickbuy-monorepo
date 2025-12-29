@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:15
+    container_name: auction-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-auction}
+      POSTGRES_USER: ${POSTGRES_USER:-auction}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-auction}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-auction}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  db_data:
+
+

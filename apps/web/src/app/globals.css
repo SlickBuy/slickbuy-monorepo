@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+:root {
+  /* New palette from request */
+  --background: #f4f4f4;
+  --foreground: #2e2e2e;
+  --card: #ffffff;
+  --card-foreground: #111827;
+  --card-border: #e5e7eb;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+  --accent: #ffd700;
+  --accent-foreground: #111827;
+  --primary: #1a73e8;
+  --primary-foreground: #ffffff;
+  --success: #0f766e;
+  --danger: #dc3545;
+  --ring: #b3d0ff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--card-border);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Utility helpers specific to this theme */
+.card-dark {
+  background-color: var(--card);
+  border: 1px solid var(--card-border);
+}
+.table-dark thead {
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+}
+.table-dark tbody tr {
+  border-color: var(--card-border);
+}
+.btn-accent {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+.btn-accent:hover {
+  filter: brightness(1.05);
+}
