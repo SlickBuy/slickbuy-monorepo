@@ -26,9 +26,8 @@ export default function AdminNewAuctionPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string>("");
   const [touched, setTouched] = useState<Record<string, boolean>>({});
-  const apiBase =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
   const [uploading, setUploading] = useState(false);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const { data: catData, isLoading: catsLoading } = useCategories();
 
   useEffect(() => {
@@ -37,6 +36,15 @@ export default function AdminNewAuctionPage() {
       setForm((prev) => ({ ...prev, categoryId: rows[0].id }));
     }
   }, [catData, form.categoryId]);
+
+  // Sync imageUrls with form.images
+  useEffect(() => {
+    const urls = form.images
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    setImageUrls(urls);
+  }, [form.images]);
 
   const setField = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -184,21 +192,21 @@ export default function AdminNewAuctionPage() {
                       : [];
                     if (!files.length) return;
                     setUploading(true);
+                    setError("");
                     try {
                       const uploaded: string[] = [];
-                      const apiRoot = apiBase.replace(/\/api$/, "");
                       for (const f of files) {
-                        const res = await uploadImage(f, apiBase);
-                        uploaded.push(`${apiRoot}${res.path}`);
+                        const url = await uploadImage(f);
+                        uploaded.push(url);
                       }
-                      const existing = form.images
-                        .split(",")
-                        .map((s) => s.trim())
-                        .filter(Boolean);
-                      const combined = [...existing, ...uploaded].join(", ");
+                      const combined = [...imageUrls, ...uploaded].join(", ");
                       setForm((prev) => ({ ...prev, images: combined }));
-                    } catch {
-                      setError("Image upload failed");
+                    } catch (err) {
+                      const message =
+                        err instanceof Error
+                          ? err.message
+                          : "Image upload failed";
+                      setError(message);
                     } finally {
                       setUploading(false);
                       if (inputEl) inputEl.value = "";
@@ -212,29 +220,55 @@ export default function AdminNewAuctionPage() {
               </div>
 
               {/* Preview grid */}
-              <div className="pt-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Preview
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                  {form.images
-                    .split(",")
-                    .map((s) => s.trim())
-                    .filter(Boolean)
-                    .map((src, idx) => (
+              {imageUrls.length > 0 && (
+                <div className="pt-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Preview ({imageUrls.length} image
+                    {imageUrls.length !== 1 ? "s" : ""})
+                  </label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                    {imageUrls.map((src, idx) => (
                       <div
                         key={`${src}-${idx}`}
-                        className="relative rounded-lg overflow-hidden border border-gray-200 bg-gray-50"
+                        className="relative rounded-lg overflow-hidden border border-gray-200 bg-gray-50 group"
                       >
                         <img
                           src={src}
                           alt={`upload-${idx}`}
-                          className="w-full h-28 object-cover"
+                          className="w-full h-28 object-contain"
                         />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = imageUrls.filter(
+                              (_, i) => i !== idx
+                            );
+                            setForm((prev) => ({
+                              ...prev,
+                              images: updated.join(", "),
+                            }));
+                          }}
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                          aria-label="Remove image"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </button>
                       </div>
                     ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </Card>
         </div>
