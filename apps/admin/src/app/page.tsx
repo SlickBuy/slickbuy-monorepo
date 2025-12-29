@@ -7,6 +7,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { useBids } from "@/hooks/useBids";
 import { useAuctionsList } from "@/hooks/useAuctions";
+import type { Auction } from "@auction-platform/types";
 
 export default function Home() {
   const { data: recent } = useAuctionsList({ page: 1, limit: 5 });
@@ -129,7 +130,7 @@ function LatestBids() {
   );
 }
 
-function RecentAuctions({ data }: { data: any[] }) {
+function RecentAuctions({ data }: { data: Auction[] }) {
   if (!data || data.length === 0) return null;
   return (
     <div>
@@ -154,7 +155,7 @@ function RecentAuctions({ data }: { data: any[] }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {data.slice(0, 5).map((a: any) => (
+              {data.slice(0, 5).map((a) => (
                 <tr key={a.id} className="hover:bg-gray-50">
                   <td className="px-5 py-3">{a.title}</td>
                   <td className="px-5 py-3 capitalize">

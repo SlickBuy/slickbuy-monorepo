@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useCreateUser } from "@/hooks/useUsers";
 import { Spinner } from "@/components/ui/spinner";
+import { UserRole } from "@auction-platform/types";
 
 export default function AdminNewUserPage() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function AdminNewUserPage() {
     username: "",
     firstName: "",
     lastName: "",
-    role: "user",
+    role: "user" as UserRole,
     password: "",
   });
 
@@ -31,14 +32,17 @@ export default function AdminNewUserPage() {
         await create.mutateAsync(form);
         show("User created", "success");
         router.push("/users");
-      } catch (e: any) {
-        show(e?.response?.data?.message || "Failed to create user", "error");
+      } catch (e: unknown) {
+        const message =
+          (e as { response?: { data?: { message?: string } } })?.response?.data
+            ?.message || "Failed to create user";
+        show(message, "error");
       }
     } catch (err: unknown) {
       let message = "Failed to create user";
       if (err && typeof err === "object") {
         const maybeAxios = err as {
-          response?: { data?: any; status?: number };
+          response?: { data?: { message?: string }; status?: number };
         };
         message =
           maybeAxios.response?.data?.message ||
@@ -86,7 +90,9 @@ export default function AdminNewUserPage() {
           <Input
             label="Role"
             value={form.role}
-            onChange={(e) => setForm({ ...form, role: e.target.value })}
+            onChange={(e) =>
+              setForm({ ...form, role: e.target.value as UserRole })
+            }
           />
           <Input
             label="Password"

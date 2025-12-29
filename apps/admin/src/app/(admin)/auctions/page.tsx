@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ interface AuctionRow {
   currentPrice: number;
 }
 
-export default function AdminAuctionsPage() {
+function AuctionsContent() {
   const sp = useSearchParams();
   const router = useRouter();
   const page = Math.max(1, Number(sp.get("page") || 1));
@@ -258,5 +258,24 @@ export default function AdminAuctionsPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function AdminAuctionsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-2xl font-semibold text-gray-900">Auctions</h1>
+          </div>
+          <div className="flex items-center justify-center py-10">
+            <Spinner size="lg" label="Loading auctions..." />
+          </div>
+        </div>
+      }
+    >
+      <AuctionsContent />
+    </Suspense>
   );
 }

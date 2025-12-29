@@ -197,7 +197,7 @@ export default function AdminNewAuctionPage() {
                         .filter(Boolean);
                       const combined = [...existing, ...uploaded].join(", ");
                       setForm((prev) => ({ ...prev, images: combined }));
-                    } catch (err) {
+                    } catch {
                       setError("Image upload failed");
                     } finally {
                       setUploading(false);

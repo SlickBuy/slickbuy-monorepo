@@ -85,7 +85,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
 
     if (asChild) {
-      const child = React.Children.only(children) as React.ReactElement<any>;
+      const child = React.Children.only(children) as React.ReactElement<
+        React.HTMLAttributes<HTMLElement>
+      >;
       const childContent = child.props?.children;
 
       return React.cloneElement(child, {
@@ -93,14 +95,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         "aria-busy": isLoading || undefined,
         "aria-disabled": contentDisabled || undefined,
         tabIndex: contentDisabled ? -1 : child.props.tabIndex,
-        onClick: (e: React.MouseEvent) => {
+        onClick: (e: React.MouseEvent<HTMLElement>) => {
           if (contentDisabled) {
             e.preventDefault();
             e.stopPropagation();
             return;
           }
           if (typeof child.props.onClick === "function") {
-            child.props.onClick(e);
+            child.props.onClick(e as React.MouseEvent<HTMLElement>);
           }
         },
         children: (

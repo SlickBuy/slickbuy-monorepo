@@ -41,8 +41,11 @@ export default function AdminEditAuctionPage() {
       await adminApi.put(`/auctions/${id}`, { title, description });
       router.replace(`/auctions/${id}`);
       router.refresh();
-    } catch (e: any) {
-      setError(e?.response?.data?.message || "Failed to save changes");
+    } catch (e: unknown) {
+      const message =
+        (e as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || "Failed to save changes";
+      setError(message);
     } finally {
       setSaving(false);
     }

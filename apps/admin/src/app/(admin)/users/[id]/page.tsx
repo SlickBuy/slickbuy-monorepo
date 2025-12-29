@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { adminApi } from "@/lib/api";
 import { useUpdateUser } from "@/hooks/useUsers";
 import { Spinner } from "@/components/ui/spinner";
+import { UserRole } from "@auction-platform/types";
 
 export default function AdminUserEditPage() {
   const params = useParams<{ id: string }>();
@@ -22,7 +23,7 @@ export default function AdminUserEditPage() {
     username: "",
     firstName: "",
     lastName: "",
-    role: "user",
+    role: "user" as UserRole,
     password: "",
   });
 
@@ -37,10 +38,13 @@ export default function AdminUserEditPage() {
           username: u.username || "",
           firstName: u.firstName || "",
           lastName: u.lastName || "",
-          role: u.role || "user",
+          role: (u.role || "user") as UserRole,
         }));
-      } catch (e: any) {
-        setError(e?.response?.data?.message || "Failed to fetch user");
+      } catch (e: unknown) {
+        const message =
+          (e as { response?: { data?: { message?: string } } })?.response?.data
+            ?.message || "Failed to fetch user";
+        setError(message);
       } finally {
         setLoading(false);
       }
@@ -94,7 +98,9 @@ export default function AdminUserEditPage() {
             <Input
               label="Role"
               value={form.role}
-              onChange={(e) => setForm({ ...form, role: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, role: e.target.value as UserRole })
+              }
             />
             <Input
               label="New Password (optional)"

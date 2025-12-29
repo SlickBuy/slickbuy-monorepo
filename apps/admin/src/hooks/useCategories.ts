@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { adminApi } from "@/lib/api";
+import type { Category } from "@auction-platform/types";
 
 export function useCategories() {
   return useQuery({
@@ -16,7 +17,12 @@ export function useCategories() {
 export function useCreateCategory() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (payload: any) => {
+    mutationFn: async (payload: {
+      name: string;
+      slug: string;
+      description?: string;
+      parentId?: string;
+    }) => {
       const resp = await adminApi.post("/categories", payload);
       return resp.data;
     },
@@ -27,7 +33,15 @@ export function useCreateCategory() {
 export function useUpdateCategory() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Partial<
+        Pick<Category, "name" | "slug" | "description" | "parentId">
+      >;
+    }) => {
       const resp = await adminApi.put(`/categories/${id}`, data);
       return resp.data;
     },

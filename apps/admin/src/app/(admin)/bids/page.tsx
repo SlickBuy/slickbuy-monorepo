@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ interface Row {
   bidder?: { id: string; email: string };
 }
 
-export default function AdminBidsPage() {
+function BidsContent() {
   const sp = useSearchParams();
   const router = useRouter();
   const page = Math.max(1, Number(sp.get("page") || 1));
@@ -178,5 +178,24 @@ export default function AdminBidsPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function AdminBidsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-2xl font-semibold text-gray-900">Bids</h1>
+          </div>
+          <div className="flex items-center justify-center py-10">
+            <Spinner size="lg" label="Loading bids..." />
+          </div>
+        </div>
+      }
+    >
+      <BidsContent />
+    </Suspense>
   );
 }

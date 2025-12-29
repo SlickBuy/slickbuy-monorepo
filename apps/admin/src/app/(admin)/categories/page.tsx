@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { Pagination } from "@/components/Pagination";
 
-export default function AdminCategoriesPage() {
+function CategoriesContent() {
   const router = useRouter();
   const sp = useSearchParams();
   const page = Math.max(1, Number(sp.get("page") || 1));
@@ -318,5 +318,24 @@ export default function AdminCategoriesPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function AdminCategoriesPage() {
+  return (
+    <Suspense
+      fallback={
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-2xl font-semibold text-gray-900">Categories</h1>
+          </div>
+          <div className="flex items-center justify-center py-10">
+            <Spinner size="lg" label="Loading categories..." />
+          </div>
+        </div>
+      }
+    >
+      <CategoriesContent />
+    </Suspense>
   );
 }

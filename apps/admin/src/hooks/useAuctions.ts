@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { adminApi } from "@/lib/api";
+import type { Auction, CreateAuctionRequest } from "@auction-platform/types";
 
 export function useAuctionsList(params?: {
   page?: number;
@@ -12,11 +13,11 @@ export function useAuctionsList(params?: {
     params?.status && params.status !== "all"
       ? params.status.toUpperCase()
       : undefined;
-  const requestParams = {
+  const requestParams: Record<string, string | number> = {
     page: params?.page ?? 1,
     limit: params?.limit ?? 20,
     ...(normalizedStatus ? { status: normalizedStatus } : {}),
-  } as Record<string, any>;
+  };
 
   return useQuery({
     queryKey: [
@@ -30,7 +31,18 @@ export function useAuctionsList(params?: {
         adminApi.get("/auctions", { params: requestParams }),
         adminApi.get("/auctions/stats/dashboard"),
       ]);
-      return { ...(list.data || {}), stats: stats.data?.data } as any;
+      return {
+        ...(list.data || {}),
+        stats: stats.data?.data,
+      } as {
+        data?: Auction[];
+        stats?: {
+          active?: number;
+          scheduled?: number;
+          users?: number;
+          revenue?: number;
+        };
+      };
     },
   });
 }
@@ -38,7 +50,7 @@ export function useAuctionsList(params?: {
 export function useCreateAuction() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (payload: any) => {
+    mutationFn: async (payload: CreateAuctionRequest) => {
       const resp = await adminApi.post("/auctions", payload);
       return resp.data;
     },

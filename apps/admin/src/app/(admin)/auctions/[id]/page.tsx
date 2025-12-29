@@ -17,12 +17,16 @@ export default function AdminAuctionDetailsPage() {
     search: id,
   });
   const auction = auctionResp?.data;
-  const bids = (bidsResp?.data ?? []) as Array<{
-    id: string;
-    amount: number;
-    placedAt: string;
-    bidder?: { email: string };
-  }>;
+  const bids = useMemo(
+    () =>
+      (bidsResp?.data ?? []) as Array<{
+        id: string;
+        amount: number;
+        placedAt: string;
+        bidder?: { email: string };
+      }>,
+    [bidsResp?.data]
+  );
 
   const stats = useMemo(() => {
     const count = bids.length;

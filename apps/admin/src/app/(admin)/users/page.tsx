@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, Suspense } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -8,13 +8,14 @@ import { Spinner } from "@/components/ui/spinner";
 import { useUsers } from "@/hooks/useUsers";
 import { useSearchParams } from "next/navigation";
 import { Pagination } from "@/components/Pagination";
+import type { User } from "@auction-platform/types";
 
-export default function AdminUsersPage() {
+function UsersContent() {
   const sp = useSearchParams();
   const page = Number(sp.get("page") ?? 1);
   const limit = Number(sp.get("limit") ?? 20);
   const { data, isLoading } = useUsers(page, limit);
-  const rows: any[] = data?.data ?? [];
+  const rows = useMemo(() => (data?.data ?? []) as User[], [data?.data]);
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const allChecked = useMemo(
     () => rows.length > 0 && rows.every((r) => !!selected[r.id]),
@@ -124,5 +125,24 @@ export default function AdminUsersPage() {
         }
       />
     </div>
+  );
+}
+
+export default function AdminUsersPage() {
+  return (
+    <Suspense
+      fallback={
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-2xl font-semibold text-gray-900">Users</h1>
+          </div>
+          <div className="flex items-center justify-center py-10">
+            <Spinner size="lg" label="Loading users..." />
+          </div>
+        </div>
+      }
+    >
+      <UsersContent />
+    </Suspense>
   );
 }
