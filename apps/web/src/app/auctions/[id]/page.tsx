@@ -219,7 +219,7 @@ export default function AuctionDetailsPage() {
                   Current Bid
                 </p>
                 <p className="text-4xl font-bold">
-                  ${Number(auction.currentPrice).toFixed(2)}
+                  ${Number(auction?.currentPrice)?.toFixed(2) || 0}
                 </p>
               </div>
               <div className="space-y-2">
@@ -255,7 +255,7 @@ export default function AuctionDetailsPage() {
                   </p>
                   <p className="font-semibold">
                     {auction.reservePrice
-                      ? `$${auction.reservePrice.toFixed(2)}`
+                      ? `$${auction?.reservePrice?.toFixed(2) || 0}`
                       : "—"}
                   </p>
                 </div>
