@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { Auction, Bid } from "@auction-platform/types";
+import { Auction, Bid, AuctionStatus } from "@auction-platform/types";
 import { auctionsAPI, bidsAPI } from "@/lib/api";
 import { BidHistory, useToast } from "@auction-platform/ui";
 import { Button } from "@/components/ui/button";
@@ -100,6 +100,31 @@ export default function AuctionDetailsPage() {
       clearInterval(syncId);
     };
   }, [auction, now]);
+
+  const isScheduled = useMemo(() => {
+    if (!auction) return false;
+    return auction.status === AuctionStatus.SCHEDULED;
+  }, [auction]);
+
+  const isEnded = useMemo(() => {
+    if (!auction) return false;
+    return (
+      auction.status === AuctionStatus.ENDED ||
+      auction.status === AuctionStatus.CANCELLED
+    );
+  }, [auction]);
+
+  const canBid = useMemo(() => {
+    if (!auction) return false;
+    return auction.status === AuctionStatus.ACTIVE;
+  }, [auction]);
+
+  const getButtonText = () => {
+    if (placing) return "Placing...";
+    if (isEnded) return "Auction Ended";
+    if (isScheduled) return "Not Started";
+    return "Place Bid";
+  };
 
   const timeLeft = useMemo(() => {
     if (!auction) return "";
@@ -205,7 +230,7 @@ export default function AuctionDetailsPage() {
 
           <div className="mt-8">
             <div className="bg-white rounded-lg border border-[color:var(--card-border)]">
-              <BidHistory bids={bids as unknown as never} />
+              <BidHistory bids={bids as unknown as never} isEnded={isEnded} />
             </div>
           </div>
         </div>
@@ -227,17 +252,34 @@ export default function AuctionDetailsPage() {
                   type="number"
                   value={bidAmount || ""}
                   onChange={(e) => setBidAmount(Number(e.target.value))}
-                  placeholder={`Enter amount > ${auction.currentPrice}`}
+                  placeholder={
+                    isEnded
+                      ? "Auction has ended"
+                      : isScheduled
+                        ? "Auction not started yet"
+                        : `Enter amount > ${auction.currentPrice}`
+                  }
+                  disabled={isEnded || isScheduled || !canBid}
                 />
                 {error && <p className="text-sm text-red-500">{error}</p>}
+                {isEnded && (
+                  <p className="text-sm text-red-500">This auction has ended</p>
+                )}
+                {isScheduled && (
+                  <p className="text-sm text-amber-600">
+                    This auction has not started yet
+                  </p>
+                )}
                 <Button
                   onClick={placeBid}
-                  disabled={placing || !bidAmount}
+                  disabled={
+                    placing || !bidAmount || isEnded || isScheduled || !canBid
+                  }
                   size="lg"
                   fullWidth
                   className="btn-accent"
                 >
-                  {placing ? "Placing..." : "Place Bid"}
+                  {getButtonText()}
                 </Button>
               </div>
               <div className="grid grid-cols-2 gap-3 text-sm">

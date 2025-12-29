@@ -115,6 +115,9 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
     }
   };
 
+  console.log(status);
+  console.log(onPlaceBid);
+  console.log(id);
   return (
     <Card
       className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer bg-white"
@@ -145,9 +148,7 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
             {status.charAt(0).toUpperCase() + status.slice(1)}
           </Badge>
         </div>
-
         <p className="text-gray-600 text-sm mb-4 line-clamp-2">{description}</p>
-
         <div className="flex items-center justify-between mb-4">
           <div>
             <p className="text-sm text-gray-500">Current Bid</p>
@@ -162,17 +163,16 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
             </p>
           </div>
         </div>
-
         {status === "active" && onPlaceBid && (
           <div className="pt-2">
             <Button
-              variant="primary"
               size="sm"
+              variant="primary"
+              className="w-full bg-teal-600 hover:bg-teal-700 active:bg-teal-800 focus-visible:ring-teal-500"
               onClick={(e) => {
                 e.stopPropagation();
                 onPlaceBid(id);
               }}
-              className="w-full"
             >
               Place Bid
             </Button>

@@ -5,7 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { AuctionsModule } from './auctions/auctions.module';
-// import { UploadsModule } from './uploads/uploads.module';
+import { UploadsModule } from './uploads/uploads.module';
 import { CategoriesModule } from './categories/categories.module';
 import { PaymentsModule } from './payments/payments.module';
 import { UsersModule } from './users/users.module';
@@ -39,7 +39,7 @@ import { Payment } from './entities/payment.entity';
     }),
     AuthModule,
     AuctionsModule,
-    // UploadsModule,
+    UploadsModule,
     CategoriesModule,
     UsersModule,
     PaymentsModule,

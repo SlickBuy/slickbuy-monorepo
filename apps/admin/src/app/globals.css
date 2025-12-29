@@ -46,7 +46,7 @@
 /* Safelist utilities used inside shared UI package so Tailwind v4 includes them */
 @layer utilities {
   .ui-safelist-button-primary {
-    @apply bg-purple-600 hover:bg-blue-700 active:bg-blue-800 focus-visible:ring-blue-500 text-white border border-transparent shadow-sm hover:shadow-md;
+    @apply bg-teal-600 hover:bg-teal-700 active:bg-teal-800 focus-visible:ring-teal-500 text-white border border-transparent shadow-sm hover:shadow-md;
   }
   .ui-safelist-button-danger {
     @apply bg-red-600 hover:bg-red-700 active:bg-red-800 focus-visible:ring-red-500 text-white border border-transparent shadow-sm hover:shadow-md;

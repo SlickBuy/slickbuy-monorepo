@@ -36,6 +36,7 @@ export class BidsService {
     }
 
     const now = new Date();
+
     // Auto-correct status based on time window to avoid race conditions
     if (auction.status !== AuctionStatus.ACTIVE) {
       if (now < auction.startTime) {
@@ -49,10 +50,6 @@ export class BidsService {
         status: AuctionStatus.ACTIVE,
       });
       auction.status = AuctionStatus.ACTIVE;
-    }
-
-    if (auction.sellerId === userId) {
-      throw new ForbiddenException('You cannot bid on your own auction');
     }
 
     if (now >= auction.endTime) {
@@ -69,7 +66,6 @@ export class BidsService {
       { isWinning: false },
     );
 
-    // Create new bid
     const bid = this.bidRepository.create({
       amount,
       auctionId,
@@ -98,15 +94,16 @@ export class BidsService {
     if (!result) {
       throw new NotFoundException('Bid not found after creation');
     }
-    return result;
+    return this.maskBidder(result);
   }
 
   async getBidsForAuction(auctionId: string): Promise<Bid[]> {
-    return this.bidRepository.find({
+    const bids = await this.bidRepository.find({
       where: { auctionId },
       relations: ['bidder'],
       order: { createdAt: 'DESC' },
     });
+    return bids.map((bid) => this.maskBidder(bid));
   }
 
   async getAllBids(
@@ -120,7 +117,7 @@ export class BidsService {
       skip,
       take: limit,
     });
-    return { bids, total };
+    return { bids: bids.map((bid) => this.maskBidder(bid)), total };
   }
 
   async getUserBids(
@@ -146,10 +143,27 @@ export class BidsService {
       where: { auctionId, isWinning: true },
       relations: ['bidder'],
     });
-    return found ?? null;
+    return found ? this.maskBidder(found) : null;
   }
 
   async deleteBid(id: string): Promise<void> {
     await this.bidRepository.delete(id);
+  }
+
+  private maskUsername(username: string): string {
+    if (!username || username.length <= 4) {
+      return '****';
+    }
+    return username.substring(0, 4) + '*'.repeat(username.length - 4);
+  }
+
+  private maskBidder(bid: Bid): Bid {
+    if (bid.bidder && bid.bidder.username) {
+      bid.bidder = {
+        ...bid.bidder,
+        username: this.maskUsername(bid.bidder.username),
+      };
+    }
+    return bid;
   }
 }

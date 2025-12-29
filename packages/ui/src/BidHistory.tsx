@@ -14,11 +14,13 @@ interface Bid {
 interface BidHistoryProps {
   bids: Bid[];
   currentUserId?: string;
+  isEnded?: boolean;
 }
 
 export const BidHistory: React.FC<BidHistoryProps> = ({
   bids,
   currentUserId,
+  isEnded = false,
 }) => {
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -51,7 +53,9 @@ export const BidHistory: React.FC<BidHistoryProps> = ({
               key={bid.id}
               className={`flex items-center justify-between p-3 rounded-lg ${
                 bid.isWinning
-                  ? "bg-green-50 border border-green-200"
+                  ? isEnded
+                    ? "bg-green-100 border border-green-300"
+                    : "bg-green-50 border border-green-200"
                   : "bg-gray-50"
               }`}
             >
@@ -59,8 +63,8 @@ export const BidHistory: React.FC<BidHistoryProps> = ({
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
                     bid.isWinning
-                      ? "bg-green-100 text-green-800"
-                      : "bg-gray-200 text-gray-600"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-gray-200 text-gray-700"
                   }`}
                 >
                   {index + 1}
@@ -84,7 +88,9 @@ export const BidHistory: React.FC<BidHistoryProps> = ({
                   {formatPrice(bid.amount)}
                 </p>
                 {bid.isWinning && (
-                  <p className="text-xs text-green-600 font-medium">Leading</p>
+                  <p className="text-xs text-green-700 font-medium">
+                    {isEnded ? "Winner" : "Leading"}
+                  </p>
                 )}
               </div>
             </div>
