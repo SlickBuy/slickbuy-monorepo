@@ -31,7 +31,7 @@ import { Payment } from './entities/payment.entity';
           type: 'postgres' as const,
           url,
           entities: [User, Auction, Bid, Category, Payment],
-          synchronize: false, // TODO: set to false in production and use migrations
+          synchronize: true, // TODO: set to false in production and use migrations
           logging: false,
           ssl: isProd ? { rejectUnauthorized: false } : false,
         };
