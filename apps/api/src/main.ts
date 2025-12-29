@@ -8,9 +8,24 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // Enable CORS for frontend applications
+  const allowedOrigins = [
+    'http://localhost:3001', // web local
+    'http://localhost:3002', // admin local
+  ];
+
+  // Add production origins from environment variables
+  if (process.env.WEB_URL) {
+    allowedOrigins.push(process.env.WEB_URL);
+  }
+  if (process.env.ADMIN_URL) {
+    allowedOrigins.push(process.env.ADMIN_URL);
+  }
+
   app.enableCors({
-    origin: ['http://localhost:3001', 'http://localhost:3002'], // web and admin ports
+    origin: allowedOrigins,
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   // Enable validation pipes
