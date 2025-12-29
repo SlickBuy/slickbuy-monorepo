@@ -9,6 +9,11 @@ import { AuctionsModule } from './auctions/auctions.module';
 import { CategoriesModule } from './categories/categories.module';
 import { PaymentsModule } from './payments/payments.module';
 import { UsersModule } from './users/users.module';
+import { User } from './entities/user.entity';
+import { Auction } from './entities/auction.entity';
+import { Bid } from './entities/bid.entity';
+import { Category } from './entities/category.entity';
+import { Payment } from './entities/payment.entity';
 
 @Module({
   imports: [
@@ -20,11 +25,12 @@ import { UsersModule } from './users/users.module';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const url = config.get<string>('DATABASE_URL');
+        console.log(url);
         const isProd = process.env.NODE_ENV === 'production';
         return {
           type: 'postgres' as const,
           url,
-          entities: [],
+          entities: [User, Auction, Bid, Category, Payment],
           synchronize: false, // TODO: set to false in production and use migrations
           logging: false,
           ssl: isProd ? { rejectUnauthorized: false } : false,
