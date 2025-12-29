@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { Auction, Bid, AuctionStatus } from "@auction-platform/types";
 import { auctionsAPI, bidsAPI } from "@/lib/api";
@@ -173,14 +172,10 @@ export default function AuctionDetailsPage() {
               <div className="space-y-4">
                 {/* Main image */}
                 <div className="relative w-full h-[420px] overflow-hidden rounded-lg bg-gray-900/20">
-                  <Image
+                  <img
                     src={images[activeIndex] || images[0]}
                     alt={auction.title}
-                    fill
-                    quality={90}
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 900px"
-                    className="object-cover"
-                    priority
+                    className="w-full h-full object-cover"
                   />
                 </div>
                 {/* Thumbnails carousel */}
@@ -196,13 +191,9 @@ export default function AuctionDetailsPage() {
                           : "border border-[var(--card-border)] hover:border-[var(--muted-foreground)]"
                       }`}
                     >
-                      <Image
+                      <img
                         src={src}
                         alt={`thumb-${idx}`}
-                        width={112}
-                        height={80}
-                        quality={80}
-                        sizes="112px"
                         className="h-full w-full object-cover"
                       />
                     </button>

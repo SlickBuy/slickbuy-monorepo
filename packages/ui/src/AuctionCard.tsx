@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import { Card } from "./Card";
 import { Badge } from "./Badge";
 import { Button } from "./Button";
@@ -122,15 +121,7 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
     >
       {image && (
         <div className="relative w-full h-48">
-          <Image
-            src={image}
-            alt={title}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            quality={85}
-            className="object-cover"
-            priority={false}
-          />
+          <img src={image} alt={title} className="w-full h-full object-cover" />
         </div>
       )}
       <div className="p-4">
