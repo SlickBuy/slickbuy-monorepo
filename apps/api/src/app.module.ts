@@ -5,12 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { AuctionsModule } from './auctions/auctions.module';
-import { User } from './entities/user.entity';
-import { Auction } from './entities/auction.entity';
-import { Bid } from './entities/bid.entity';
-import { Category } from './entities/category.entity';
-import { Payment } from './entities/payment.entity';
-import { UploadsModule } from './uploads/uploads.module';
+// import { UploadsModule } from './uploads/uploads.module';
 import { CategoriesModule } from './categories/categories.module';
 import { PaymentsModule } from './payments/payments.module';
 import { UsersModule } from './users/users.module';
@@ -38,7 +33,7 @@ import { UsersModule } from './users/users.module';
     }),
     AuthModule,
     AuctionsModule,
-    UploadsModule,
+    // UploadsModule,
     CategoriesModule,
     UsersModule,
     PaymentsModule,
