@@ -236,6 +236,23 @@ export default function AdminNewAuctionPage() {
                           src={src}
                           alt={`upload-${idx}`}
                           className="w-full h-28 object-contain"
+                          onError={(e) => {
+                            console.error("Image failed to load:", src);
+                            const img = e.target as HTMLImageElement;
+                            img.style.display = "none";
+                            // Show error indicator
+                            const parent = img.parentElement;
+                            if (parent) {
+                              parent.innerHTML = `
+                                <div class="flex items-center justify-center h-full text-red-500 text-xs">
+                                  Failed to load
+                                </div>
+                              `;
+                            }
+                          }}
+                          onLoad={() => {
+                            console.log("Image loaded successfully:", src);
+                          }}
                         />
                         <button
                           type="button"

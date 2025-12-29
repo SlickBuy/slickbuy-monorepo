@@ -115,9 +115,6 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
     }
   };
 
-  console.log(status);
-  console.log(onPlaceBid);
-  console.log(id);
   return (
     <Card
       className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer bg-white"

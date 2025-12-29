@@ -18,10 +18,9 @@ export async function uploadImage(file: File): Promise<string> {
     throw new Error(`Upload failed: ${error.message}`);
   }
 
-  // Get public URL
-  const {
-    data: { publicUrl },
-  } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(filePath);
+  // Get public URL - construct it manually to ensure correct format
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+  const publicUrl = `${supabaseUrl}/storage/v1/object/public/${STORAGE_BUCKET}/${filePath}`;
 
   return publicUrl;
 }
