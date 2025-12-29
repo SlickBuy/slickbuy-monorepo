@@ -121,7 +121,11 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
     >
       {image && (
         <div className="relative w-full h-48">
-          <img src={image} alt={title} className="w-full h-full object-cover" />
+          <img
+            src={image}
+            alt={title}
+            className="w-full h-full object-contain"
+          />
         </div>
       )}
       <div className="p-4">

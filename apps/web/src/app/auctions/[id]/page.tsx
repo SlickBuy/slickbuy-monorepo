@@ -175,7 +175,7 @@ export default function AuctionDetailsPage() {
                   <img
                     src={images[activeIndex] || images[0]}
                     alt={auction.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                   />
                 </div>
                 {/* Thumbnails carousel */}
@@ -194,7 +194,7 @@ export default function AuctionDetailsPage() {
                       <img
                         src={src}
                         alt={`thumb-${idx}`}
-                        className="h-full w-full object-cover"
+                        className="h-full w-full object-contain"
                       />
                     </button>
                   ))}
